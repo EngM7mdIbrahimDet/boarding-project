@@ -7,14 +7,14 @@ import LoggedInAppHeader from "../components/AppHeader";
 export default function AppLayout({ children }: { children: any }) {
   return (
     <AppShell
-      padding="md"  
+    padding={0}
       navbar={<NavBar/>}
       header={<LoggedInAppHeader/>}
       styles={(theme) => ({
         main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
       })}
     >
-      <ScrollArea style={{minHeight: 'calc(100vh - 90px)'}} className='w-full border-2 border-black'>
+      <ScrollArea style={{minHeight: 'calc(100vh - 90px)', margin: "0px"}} className='w-full'>
         {children}
       </ScrollArea>
     </AppShell>

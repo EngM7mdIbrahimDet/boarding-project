@@ -4,7 +4,8 @@ export interface INavBarItem {
     label: string;
 }
 
-export interface NavBarItemProps extends INavBarItem {
+export interface NavBarItemProps extends Omit<INavBarItem, "route"> {
+    route?: string;
     isSelected: boolean;
     onPress?:()=>void;
 }

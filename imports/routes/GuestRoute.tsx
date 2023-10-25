@@ -5,14 +5,16 @@ import { ReactElement } from "react";
 import { ROUTES } from "./routes";
 import AppLayout from "../ui/layouts/AppLayout";
 import useCurrentUser from "../hooks/current-user";
-import { guestOptions } from "../ui/components/NavBar/NavBar";
+import { guestOptions, sharedUserOptions } from "../ui/components/NavBar/NavBar";
 
 export default function GuestRoute({ children }: { children: ReactElement }) {
   const currentUser = useCurrentUser();
   const location = useLocation();
   return currentUser &&
     Boolean(
-      guestOptions.find((option) =>
+      guestOptions.some((option) =>
+        Boolean(matchPath(option.route, location.pathname))
+      ) && !sharedUserOptions.some((option) =>
         Boolean(matchPath(option.route, location.pathname))
       )
     ) ? (

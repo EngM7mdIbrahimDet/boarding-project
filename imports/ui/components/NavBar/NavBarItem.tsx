@@ -16,14 +16,14 @@ export default function NavBarItem({
     <Flex
       onClick={() => {
         if (onPress) onPress();
-        navigate(route);
+        if(route) navigate(route);
       }}
       direction="row"
       gap={5}
       justify="start"
       align="stretch"
       p="sm"
-      className={`w-full ${
+      className={`w-full hover:cursor-pointer ${
         isSelected
           ? theme.colorScheme === "dark"
             ? "bg-blue-950"

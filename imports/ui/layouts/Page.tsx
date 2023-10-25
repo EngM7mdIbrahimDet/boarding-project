@@ -3,14 +3,23 @@ import React from "react";
 
 export default function Page({
   children,
-  stack,
+  stack = false,
+  className
 }: {
   children: React.ReactNode;
-  stack: boolean;
+  stack?: boolean;
+  className?: string;
 }) {
   return stack ? (
-    <Stack className="w-full h-full ">{children}</Stack>
+    <Stack
+      style={{ minHeight: "calc(100vh - 90px)" }}
+      className={`w-full h-full ${className}`}
+    >
+      {children}
+    </Stack>
   ) : (
-    <Box className="w-full h-full flex border-2 border-purple-700">{children}</Box>
+    <Box style={{ minHeight: "calc(100vh - 90px)" }} className={`w-full h-full flex ${className}`}>
+      {children}
+    </Box>
   );
 }

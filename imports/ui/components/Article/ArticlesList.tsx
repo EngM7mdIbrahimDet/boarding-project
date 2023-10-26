@@ -6,6 +6,8 @@ import { IconArticleOff, IconFaceIdError } from "@tabler/icons";
 import { ArticleErrorProps } from "/imports/types/ui/components/Article/ArticleErrorProps";
 import { Meteor } from "meteor/meteor";
 import { useNavigate } from "react-router-dom";
+import AddArticlePreview from "./AddArticlePreview";
+import { ACCENT_COLOUR } from "/imports/constants/styles";
 
 const ArticleError = ({ error }: ArticleErrorProps) => {
   useEffect(() => {
@@ -36,7 +38,7 @@ const ArticlesEmpty = () => {
       withBorder
       shadow="xl"
     >
-      <IconArticleOff className="block" color="#ADD8E6" size={200} />
+      <IconArticleOff className="block" color={ACCENT_COLOUR} size={200} />
       <Title order={2}>No articles are here in the space! </Title>
     </Card>
   );
@@ -58,19 +60,22 @@ export default function ArticlesList({
       ) : articles.length === 0 ? (
         <ArticlesEmpty />
       ) : (
-        articles.map((article) => (
-          <ArticlePreview
-            key={article._id}
-            author={article.createdById ?? "Anonymous"}
-            date={article.createdOn ?? Date.now()}
-            text={article.text}
-            title={article.title}
-            buttonText="Show Comments"
-            onPress={() => {
-              goTo("/articles/" + article._id);
-            }}
-          />
-        ))
+        <>
+          <AddArticlePreview />
+          {articles.map((article) => (
+            <ArticlePreview
+              key={article._id}
+              author={article.createdById ?? "Anonymous"}
+              date={article.createdOn ?? Date.now()}
+              text={article.text}
+              title={article.title}
+              buttonText="Show Comments"
+              onPress={() => {
+                goTo("/articles/" + article._id);
+              }}
+            />
+          ))}
+        </>
       )}
     </Center>
   );

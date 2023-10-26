@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import { NotificationsProvider } from "@mantine/notifications";
 import RegisterPage from "./pages/RegisterPage";
 import { QueryClient, QueryClientProvider } from "react-query";
+import AddArticlePage from "./pages/AddArticlePage";
 import ArticlesPage from "./pages/ArticlesPage";
 
 const queryClient = new QueryClient();
@@ -63,23 +64,23 @@ export const App = () => {
                 }
               />
               <Route
-                path={ROUTES.ADD_ARTICLE}
+                path={ROUTES.MY_ARTICLES}
                 element={
                   <LoggedInRoute>
                     <Hello />
+                  </LoggedInRoute>
+                }
+              />
+              <Route
+                path={ROUTES.ADD_ARTICLE}
+                element={
+                  <LoggedInRoute>
+                    <AddArticlePage />
                   </LoggedInRoute>
                 }
               />
               <Route
                 path={ROUTES.EDIT_ARTICLE}
-                element={
-                  <LoggedInRoute>
-                    <Hello />
-                  </LoggedInRoute>
-                }
-              />
-              <Route
-                path={ROUTES.MY_ARTICLES}
                 element={
                   <LoggedInRoute>
                     <Hello />

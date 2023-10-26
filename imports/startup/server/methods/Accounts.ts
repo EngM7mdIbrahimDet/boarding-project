@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { IRegisterUserReq } from "/imports/types/entities/User";
+import { IRegisterUserReq } from "../../../types/models/User";
 import { Accounts } from 'meteor/accounts-base'
 
 export const createAcccount = ({name, email, password, confirmPassword}: IRegisterUserReq) =>{

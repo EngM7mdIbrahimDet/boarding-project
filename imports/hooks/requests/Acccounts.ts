@@ -1,5 +1,5 @@
 import { UseMutationOptions, useMutation } from "react-query";
-import { ILoginUserReq, IRegisterUserReq } from "/imports/types/entities/User";
+import { ILoginUserReq, IRegisterUserReq } from "../../types/models/User";
 import { login, logout, register } from "/imports/api/requests/Accounts";
 
 export const useLoginUser = (

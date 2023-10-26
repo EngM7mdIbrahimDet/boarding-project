@@ -1,0 +1,22 @@
+{
+    "defaultAccounts":[
+        {"name": "Mohamed Ibrahim", "email": "test@mail.com", "password": "123456"},
+        {"name": "Ahmed Ibrahim", "email": "test4@mail.com", "password": "123456"},
+        {"name": "Ali Ibrahim", "email": "test2@mail.com", "password": "123456"},
+        {"name": "Hassan Ibrahim", "email": "test3@mail.com", "password": "123456"}
+    ],
+    "defaultArticles" : [
+        {
+            "title" : "Article 1",
+            "text" : "This is the content of article 1"
+        },
+        {
+            "title" : "Article 2",
+            "text" : "This is the content of article 2"
+        },
+        {
+            "title" : "Article 3",
+            "text" : "This is the content of article 3"
+        }
+    ]
+}

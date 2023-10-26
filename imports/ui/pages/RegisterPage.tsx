@@ -20,7 +20,10 @@ import { IconLogin } from "@tabler/icons";
 import { ROUTES } from "/imports/routes/routes";
 import { useNavigate } from "react-router-dom";
 import { showNotification } from "@mantine/notifications";
-import { useRegisterUser } from "/imports/hooks/requests/Acccounts";
+import {
+  useLoginUser,
+  useRegisterUser,
+} from "/imports/hooks/requests/Acccounts";
 
 export default function RegisterPage() {
   const form = useForm({
@@ -55,7 +58,7 @@ export default function RegisterPage() {
     },
   });
   const goTo = useNavigate();
-  const register = useRegisterUser({
+  const login = useLoginUser({
     onSuccess() {
       showNotification({
         title: "Hello!",
@@ -65,14 +68,19 @@ export default function RegisterPage() {
       goTo(ROUTES.ARTICLES);
     },
   });
+  const register = useRegisterUser({
+    onSuccess() {
+      login.mutate({
+        email: form.values.email,
+        password: form.values.password,
+      });
+    },
+  });
 
   return (
     <Page className="relative">
       <BackgroundImage />
-      <Center
-        style={{ height: FULL_SCREEN }}
-        className="w-full "
-      >
+      <Center style={{ height: FULL_SCREEN }} className="w-full ">
         <Card
           style={{ minHeight: "50%" }}
           className="w-1/2"
@@ -91,7 +99,6 @@ export default function RegisterPage() {
             <form
               className="flex flex-col gap-3 justify-start items-stretch"
               onSubmit={form.onSubmit((values) => {
-                console.log("Values In Here", form.values);
                 register.mutate({
                   email: values.email,
                   password: values.password,
@@ -129,7 +136,7 @@ export default function RegisterPage() {
                 {...form.getInputProps("confirmPassword")}
               />
               <Button
-                loading={register.isLoading}
+                loading={register.isLoading || login.isLoading}
                 leftIcon={<IconLogin />}
                 className="mt-0 self-center"
                 variant="light"

@@ -1,0 +1,1 @@
+export const NETWORK_DELAY = 3000;

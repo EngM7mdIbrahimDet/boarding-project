@@ -6,3 +6,8 @@ export interface IArticle {
   modifiedOn?: Date;
   createdById?: string;
 }
+
+export interface IArticleFilter {
+  search?: string;
+  page?:  string;
+}

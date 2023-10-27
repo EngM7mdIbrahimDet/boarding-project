@@ -16,6 +16,16 @@ import { useFormik } from "formik";
 import { IArticle } from "/imports/types/models/Article";
 import * as Yup from "yup";
 import timeAgo from "/imports/utils/date-formatter";
+import {
+  useAddArticle,
+  useGetSingleArticle,
+  useUpdateArticle,
+} from "/imports/hooks/requests/Articles";
+import { useQueryClient } from "react-query";
+import { showNotification } from "@mantine/notifications";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "/imports/routes/routes";
+import { ArticlePreviewLoading } from "./ArticlePreview";
 
 const AddEditArticleHeader = ({
   inputProps,
@@ -41,9 +51,34 @@ export default function AddEditArticle({
   _id,
   title,
   text,
-  date,
+  timeline,
   image,
 }: AddEditArticleProps) {
+  const queryClient = useQueryClient();
+  const goTo = useNavigate();
+  const addArticle = useAddArticle({
+    onSuccess() {
+      showNotification({
+        title: "Success!",
+        message: "Article has been added!",
+        color: "green",
+      });
+      queryClient.invalidateQueries("getArticles");
+      goTo(ROUTES.ARTICLES);
+    },
+  });
+  const updateArticle = useUpdateArticle(_id ?? "", {
+    onSuccess() {
+      showNotification({
+        title: "Success!",
+        message: "Article has been updated!",
+        color: "green",
+      });
+      queryClient.invalidateQueries("getArticles");
+      goTo(-1);
+    },
+  });
+
   const form = useFormik<IArticle>({
     initialValues: {
       _id,
@@ -55,7 +90,11 @@ export default function AddEditArticle({
       text: Yup.string().required("Article's text is required"),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      if (_id) {
+        updateArticle.mutate(values);
+      } else {
+        addArticle.mutate(values);
+      }
     },
   });
   const theme = useMantineTheme();
@@ -93,10 +132,16 @@ export default function AddEditArticle({
         </Box>
         <Text color={theme.colorScheme === "light" ? "dimmed" : "blue"}>
           {_id
-            ? "Posted " + timeAgo(date ?? Date.now())
+            ? (!timeline?.isEdit ? "Posted " : "Last Edited ") +
+              timeAgo(timeline?.date ?? Date.now())
             : "Will be posted now!"}
         </Text>
-        <Button type="submit" variant="light" fullWidth>
+        <Button
+          loading={addArticle.isLoading || updateArticle.isLoading}
+          type="submit"
+          variant="light"
+          fullWidth
+        >
           {_id ? "Update Article" : "Add Article"}
         </Button>
       </form>

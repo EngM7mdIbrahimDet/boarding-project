@@ -1,40 +1,109 @@
 import { Meteor } from "meteor/meteor";
 import { Articles } from "/imports/models/Articles";
-import { IArticle } from "/imports/types/models/Article";
+import { IArticle, IArticleFilter } from "/imports/types/models/Article";
+import validateObject from "/imports/utils/validate-schema";
 
-const getAllArticles = () => {
-  return Articles.collection.find({}).fetch();
+const getAllArticles = async ({ filter }: { filter: IArticleFilter }) => {
+  const skipCount = filter?.page ? Math.max(+filter.page - 1, 0) * 10 : 0;
+  const articles = Articles.collection
+    .find(
+      {
+        $or: [
+          { title: { $regex: new RegExp(`.*${filter?.search}.*`, "i") } },
+          {
+            description: { $regex: new RegExp(`.*${filter?.search}.*`, "i") },
+          },
+        ],
+      },
+      {
+        sort: { createdOn: -1 },
+        limit: 10,
+        skip: skipCount,
+      }
+    )
+    .fetch();
+  const articlesCount = Articles.collection.find({}).count();
+  return {
+    articles,
+    count: articlesCount,
+    pages: Math.ceil(articlesCount / 10),
+  };
 };
-const getSignleArticle = (articleID: string) => {
-  return Articles.collection.find({ _id: articleID }).fetch();
+const getSignleArticle = ({ articleID }: { articleID: string }) => {
+  return Articles.collection.findOne({ _id: articleID });
 };
-const addArticle = (article: IArticle) => {
+const addArticle = ({ article }: { article: IArticle }) => {
   const currentUserID = Meteor.userId();
   if (!currentUserID) {
     throw new Meteor.Error("Unauthorized to create a new article");
   }
-  Articles.schema.validate({ ...article, createdById: currentUserID });
-  return Articles.collection.insert({ ...article, createdById: currentUserID });
+  const newArticle: IArticle = {
+    ...article,
+    createdById: currentUserID,
+    createdOn: new Date(),
+  };
+  validateObject(Articles.schema, newArticle, "Invalid article to be added!");
+  return Articles.collection.insert(newArticle);
 };
 
-const updateArticle = (articleID: string, article: IArticle) => {
+const updateArticle = ({
+  articleID,
+  article,
+}: {
+  articleID: string;
+  article: IArticle;
+}) => {
   const currentUserID = Meteor.userId();
   if (!currentUserID) {
     throw new Meteor.Error("Unauthorized to update an article");
   }
-  Articles.schema.validate({ ...article, createdById: currentUserID });
-  const currentArticle = Articles.collection.findOne({ _id: articleID });
+  let currentArticle = Articles.collection.findOne({ _id: articleID });
   if (!currentArticle) {
     throw new Meteor.Error("Article not found");
   }
   if (currentArticle.createdById !== currentUserID) {
     throw new Meteor.Error("Unauthorized to update this article");
   }
-
+  delete currentArticle._id;
+  const { _id, ...restArticle } = article;
+  const updatedArticle: IArticle = {
+    ...currentArticle,
+    ...restArticle,
+    createdById: currentUserID,
+    modifiedOn: new Date(),
+  };
+  validateObject(
+    Articles.schema,
+    updatedArticle,
+    "Invalid article to be updated!"
+  );
   return Articles.collection.update(
     { _id: articleID },
-    { ...currentArticle, ...article, createdById: currentUserID }
+    { $set: updatedArticle }
   );
+};
+
+const removeArticle = ({ articleID }: { articleID: string }) => {
+  const currentUserID = Meteor.userId();
+  if (!currentUserID) {
+    throw new Meteor.Error("Unauthorized to remove an article");
+  }
+  let currentArticle = Articles.collection.findOne({ _id: articleID });
+  if (!currentArticle) {
+    throw new Meteor.Error("Article not found");
+  }
+  if (currentArticle.createdById !== currentUserID) {
+    throw new Meteor.Error("You are not the owner to remove this article");
+  }
+  return Articles.collection.remove({ _id: articleID });
+};
+
+const getMyArticles = () => {
+  const currentUserID = Meteor.userId();
+  if (!currentUserID) {
+    throw new Meteor.Error("Unauthorized to get my articles");
+  }
+  return Articles.collection.find({ createdById: currentUserID }).fetch();
 };
 
 Meteor.methods({
@@ -48,4 +117,10 @@ Meteor.methods({
 });
 Meteor.methods({
   "articles.update": updateArticle,
+});
+Meteor.methods({
+  "articles.getMyArticles": getMyArticles,
+});
+Meteor.methods({
+  "articles.remove": removeArticle,
 });

@@ -17,7 +17,7 @@ export default function AppHeader() {
           width={30}
           height={30}
           fit="contain"
-          src="logo.png"
+          src="/logo.png"
         />
         <Title className=" ml-2 flex-1" order={2}>
           Articles

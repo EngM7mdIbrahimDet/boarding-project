@@ -12,7 +12,7 @@ const ArticleAddImage = ({ isLoggedIn }: ArticleAddImageProps) => {
     <Box mb="lg" className="relative h-60 w-60 self-center">
       <Image
         className="w-full h-full"
-        src={isLoggedIn ? "blog.png" : "login.png"}
+        src={isLoggedIn ? "/blog.png" : "/login.png"}
         fit="contain"
       />
       <IconCirclePlus

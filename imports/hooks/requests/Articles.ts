@@ -8,15 +8,23 @@ import {
   addArticle,
   getArticle,
   getArticles,
+  getMyArticles,
+  updateArticle,
 } from "/imports/api/requests/Articles";
-import { IArticle } from "/imports/types/models/Article";
+import { IArticle, IArticleFilter } from "/imports/types/models/Article";
 
 export const useGetAllArticles = (
+  filter?: IArticleFilter,
   options?: UseQueryOptions<any, unknown, any>
 ) => {
-  return useQuery<any, any, IArticle[], any>(
-    ["getArticles"],
-    () => getArticles(),
+  return useQuery<
+    any,
+    any,
+    { articles: IArticle[]; pages: number; count: number},
+    any
+  >(
+    ["getArticles", filter],
+    () => getArticles(filter ?? { search: "", page: "1" }),
     {
       ...options,
     }
@@ -52,7 +60,20 @@ export const useUpdateArticle = (
 ) => {
   return useMutation<any, any, IArticle, any>(
     ["updateArticle", articleID],
-    (article) => addArticle(article),
+    (article) => updateArticle(articleID, article),
+    {
+      ...options,
+    }
+  );
+};
+
+export const useGetMyArticles = (
+  userID: string,
+  options?: UseQueryOptions<any, unknown, any>
+) => {
+  return useQuery<any, any, IArticle[], any>(
+    ["getMyArticles", userID],
+    () => getMyArticles(),
     {
       ...options,
     }

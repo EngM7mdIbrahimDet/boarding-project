@@ -4,6 +4,7 @@ import {
   ArticlePreviewProps,
 } from "/imports/types/ui/components/Article/ArticlePreviewProps";
 import {
+  ActionIcon,
   Box,
   Button,
   Card,
@@ -17,8 +18,12 @@ import {
 } from "@mantine/core";
 import timeAgo from "/imports/utils/date-formatter";
 import randAvat from "/imports/utils/random-avatar";
+import { IconEdit } from "@tabler/icons";
+import { useNavigate } from "react-router-dom";
+import useCurrentUser from "/imports/hooks/current-user";
 
-const ArticleHeader = ({ author, title }: ArticleHeaderProps) => {
+const ArticleHeader = ({ author, title, _id }: ArticleHeaderProps) => {
+  const goTo = useNavigate();
   return (
     <Flex gap={10} justify="start" align="center" style={{ height: 50 }}>
       <Image src={randAvat()} height={40} width={40} fit="contain" />
@@ -28,6 +33,16 @@ const ArticleHeader = ({ author, title }: ArticleHeaderProps) => {
         </Title>
         <Text>{author}</Text>
       </Box>
+      {_id && (
+        <ActionIcon
+          variant="light"
+          onClick={() => {
+            goTo(`/articles/${_id}/edit`);
+          }}
+        >
+          <IconEdit size={20} />
+        </ActionIcon>
+      )}
     </Flex>
   );
 };
@@ -69,6 +84,7 @@ export const ArticlePreviewLoading = () => {
 };
 
 export default function ArticlePreview({
+  _id,
   author,
   text,
   buttonText,
@@ -77,6 +93,7 @@ export default function ArticlePreview({
   title,
 }: ArticlePreviewProps) {
   const theme = useMantineTheme();
+  const currentUser = useCurrentUser();
   return (
     <Card
       style={{ minHeight: "400px" }}
@@ -85,7 +102,11 @@ export default function ArticlePreview({
       shadow="xl"
     >
       <Box className=" flex flex-col flex-1 gap-2">
-        <ArticleHeader title={title} author={author} />
+        <ArticleHeader
+          title={title}
+          _id={currentUser?._id === author ? _id : undefined}
+          author={currentUser?._id === author ? "You" : author}
+        />
         <Text
           mt="md"
           className="flex-1 break-words text-ellipsis"

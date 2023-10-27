@@ -64,6 +64,7 @@ export default function ArticlesList({
           <AddArticlePreview />
           {articles.map((article) => (
             <ArticlePreview
+              _id={article._id}
               key={article._id}
               author={article.createdById ?? "Anonymous"}
               date={article.createdOn ?? Date.now()}

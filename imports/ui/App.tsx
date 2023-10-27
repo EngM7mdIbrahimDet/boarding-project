@@ -13,6 +13,8 @@ import RegisterPage from "./pages/RegisterPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AddArticlePage from "./pages/AddArticlePage";
 import ArticlesPage from "./pages/ArticlesPage";
+import EditArticlePage from "./pages/EditArticlePage";
+import MyArticlesPage from "./pages/MyArticlesPage";
 
 const queryClient = new QueryClient();
 export const App = () => {
@@ -28,14 +30,6 @@ export const App = () => {
                 element={
                   <GuestRoute>
                     <ArticlesPage />
-                  </GuestRoute>
-                }
-              />
-              <Route
-                path={ROUTES.SINGLE_ARTICLE}
-                element={
-                  <GuestRoute>
-                    <Hello />
                   </GuestRoute>
                 }
               />
@@ -67,7 +61,7 @@ export const App = () => {
                 path={ROUTES.MY_ARTICLES}
                 element={
                   <LoggedInRoute>
-                    <Hello />
+                    <MyArticlesPage />
                   </LoggedInRoute>
                 }
               />
@@ -83,8 +77,16 @@ export const App = () => {
                 path={ROUTES.EDIT_ARTICLE}
                 element={
                   <LoggedInRoute>
-                    <Hello />
+                    <EditArticlePage />
                   </LoggedInRoute>
+                }
+              />
+              <Route
+                path={ROUTES.SINGLE_ARTICLE}
+                element={
+                  <GuestRoute>
+                    <Hello />
+                  </GuestRoute>
                 }
               />
               <Route path="*" element={<Navigate to={ROUTES.NOT_FOUND} />} />

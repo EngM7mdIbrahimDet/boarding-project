@@ -23,3 +23,7 @@ export const updateArticle = async (
 export const getMyArticles = async (): Promise<IArticle[]> => {
   return await callAsync<IArticle[]>("articles.getMyArticles", {});
 }
+
+export const removeArticle = async (articleID: string): Promise<void> => {
+  return await callAsync<void>("articles.remove", { articleID });
+}

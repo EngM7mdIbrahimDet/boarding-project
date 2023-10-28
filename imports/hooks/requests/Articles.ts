@@ -9,6 +9,7 @@ import {
   getArticle,
   getArticles,
   getMyArticles,
+  removeArticle,
   updateArticle,
 } from "/imports/api/requests/Articles";
 import { IArticle, IArticleFilter } from "/imports/types/models/Article";
@@ -48,6 +49,18 @@ export const useAddArticle = (
   return useMutation<any, any, IArticle, any>(
     ["addArticle"],
     (article) => addArticle(article),
+    {
+      ...options,
+    }
+  );
+};
+
+export const useDeleteArticle = (
+  options?: UseMutationOptions<any, unknown, any, any>
+) => {
+  return useMutation<any, any, string, any>(
+    ["removeArticle"],
+    (article) => removeArticle(article),
     {
       ...options,
     }

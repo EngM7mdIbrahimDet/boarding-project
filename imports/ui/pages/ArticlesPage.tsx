@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Page from "../layouts/Page";
 import { useGetAllArticles } from "/imports/hooks/requests/Articles";
 import ArticlesList from "../components/Article/ArticlesList";
 import { useDebouncedState } from "@mantine/hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Loader, Pagination, TextInput } from "@mantine/core";
+import {
+  Card,
+  Loader,
+  Modal,
+  Pagination,
+  TextInput,
+  useMantineTheme,
+} from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
 import { ACCENT_COLOUR } from "/imports/constants/styles";
 import { IArticleFilter } from "/imports/types/models/Article";
@@ -19,10 +26,15 @@ export default function ArticlesPage() {
     500
   );
   const { data, isLoading, error } = useGetAllArticles(filter, {});
-  const {articles, pages, count} = data ?? {articles: [], pages: 0, count: 0};
+  const { articles, pages, count } = data ?? {
+    articles: [],
+    pages: 0,
+    count: 0,
+  };
   return (
     <Page className="py-7" stack>
       <TextInput
+        label="Search"
         className="w-2/5 self-center"
         placeholder={`We have arround ${count} articles in our space!`}
         defaultValue={filter.search}
@@ -38,6 +50,7 @@ export default function ArticlesPage() {
           )
         }
       />
+      
       <ArticlesList loading={isLoading} articles={articles} error={error} />
       <Pagination
         onChange={(value) => {

@@ -15,6 +15,7 @@ import AddArticlePage from "./pages/AddArticlePage";
 import ArticlesPage from "./pages/ArticlesPage";
 import EditArticlePage from "./pages/EditArticlePage";
 import MyArticlesPage from "./pages/MyArticlesPage";
+import SingleArticlePage from "./pages/SingleArticlePage";
 
 const queryClient = new QueryClient();
 export const App = () => {
@@ -85,7 +86,7 @@ export const App = () => {
                 path={ROUTES.SINGLE_ARTICLE}
                 element={
                   <GuestRoute>
-                    <Hello />
+                    <SingleArticlePage />
                   </GuestRoute>
                 }
               />

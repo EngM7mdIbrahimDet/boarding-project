@@ -2,6 +2,7 @@ export interface ArticleHeaderProps{
     author: string;
     title: string;
     _id?: string;
+    onDelete: (articleId: string) => void;
 }
 export interface ArticlePreviewProps {
     _id?: string;
@@ -10,5 +11,6 @@ export interface ArticlePreviewProps {
     text: string;
     date: Date | number;
     buttonText?: string;
+    onDelete: (articleId: string) => void;
     onPress?: () => void;
 }

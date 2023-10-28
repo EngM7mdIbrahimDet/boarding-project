@@ -1,6 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { ArticlesListProps } from "/imports/types/ui/components/Article/ArticlesListProps";
-import { Card, Center, Title } from "@mantine/core";
+import {
+  Card,
+  Center,
+  Title,
+} from "@mantine/core";
 import ArticlePreview, { ArticlePreviewLoading } from "./ArticlePreview";
 import { IconArticleOff, IconFaceIdError } from "@tabler/icons";
 import { ArticleErrorProps } from "/imports/types/ui/components/Article/ArticleErrorProps";
@@ -8,11 +12,12 @@ import { Meteor } from "meteor/meteor";
 import { useNavigate } from "react-router-dom";
 import AddArticlePreview from "./AddArticlePreview";
 import { ACCENT_COLOUR } from "/imports/constants/styles";
+import { showNotification } from "@mantine/notifications";
+import { useDeleteArticle } from "/imports/hooks/requests/Articles";
+import { useQueryClient } from "react-query";
+import AppModal from "../AppModal";
 
 const ArticleError = ({ error }: ArticleErrorProps) => {
-  useEffect(() => {
-    console.log(error);
-  }, [error]);
   return (
     <Card
       style={{ minHeight: "400px" }}
@@ -49,8 +54,29 @@ export default function ArticlesList({
   error,
 }: ArticlesListProps) {
   const goTo = useNavigate();
+  const [deletedPost, setDeletedPost] = useState<string | null>(null);
+  const querClient = useQueryClient();
+  const deleteArticle = useDeleteArticle({
+    onSuccess() {
+      showNotification({
+        title: "Article Deleted!",
+        message: "Article has been deleted successfully!",
+        color: "green",
+      });
+      setDeletedPost(null);
+      querClient.invalidateQueries("getArticles");
+      querClient.invalidateQueries("getMyArticles");
+    },
+  });
   return (
     <Center className="flex flex-1 flex-col gap-5 max-w-screen-2xl ">
+      <AppModal
+        loading={deleteArticle.isLoading}
+        modalText="Are you sure you want to delete the article ?"
+        onClose={()=>{setDeletedPost(null)}}
+        onYes={()=>{deleteArticle.mutate(deletedPost as string)}}
+        opened={!!deletedPost}
+      />
       {loading ? (
         "xxxx"
           .split("")
@@ -64,6 +90,9 @@ export default function ArticlesList({
           <AddArticlePreview />
           {articles.map((article) => (
             <ArticlePreview
+              onDelete={() => {
+                setDeletedPost(article?._id ?? null);
+              }}
               _id={article._id}
               key={article._id}
               author={article.createdById ?? "Anonymous"}

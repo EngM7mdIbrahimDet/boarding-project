@@ -25,17 +25,18 @@ import { useQueryClient } from "react-query";
 import { showNotification } from "@mantine/notifications";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "/imports/routes/routes";
-import { ArticlePreviewLoading } from "./ArticlePreview";
 
 const AddEditArticleHeader = ({
   inputProps,
   image,
+  isLoading
 }: AddEditArticleHeaderProps) => {
   return (
     <Flex gap={10} justify="start" align="center">
       <Image src={image} height={40} width={40} fit="contain" />
       <Box className=" flex flex-col py-5 justify-start items-start flex-1">
         <TextInput
+        disabled={isLoading}
           className="self-stretch"
           placeholder="What will be the article's title?"
           error={inputProps.error}
@@ -64,6 +65,7 @@ export default function AddEditArticle({
         color: "green",
       });
       queryClient.invalidateQueries("getArticles");
+      queryClient.invalidateQueries("getMyArticles");
       goTo(ROUTES.ARTICLES);
     },
   });
@@ -75,6 +77,7 @@ export default function AddEditArticle({
         color: "green",
       });
       queryClient.invalidateQueries("getArticles");
+      queryClient.invalidateQueries("getMyArticles");
       goTo(-1);
     },
   });
@@ -114,6 +117,7 @@ export default function AddEditArticle({
       >
         <AddEditArticleHeader
           image={image}
+          isLoading={addArticle.isLoading || updateArticle.isLoading}
           inputProps={{
             props: form.getFieldProps("title"),
             error: form.getFieldMeta("title").error,
@@ -124,6 +128,7 @@ export default function AddEditArticle({
             className="flex-1 border-none"
             placeholder="What is on your mind?"
             autosize
+            disabled={addArticle.isLoading || updateArticle.isLoading}
             minRows={15}
             maxRows={4}
             error={form.getFieldMeta("text").error}

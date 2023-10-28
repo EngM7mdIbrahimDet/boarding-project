@@ -18,11 +18,11 @@ import {
 } from "@mantine/core";
 import timeAgo from "/imports/utils/date-formatter";
 import randAvat from "/imports/utils/random-avatar";
-import { IconEdit } from "@tabler/icons";
+import { IconEdit, IconTrashX } from "@tabler/icons";
 import { useNavigate } from "react-router-dom";
 import useCurrentUser from "/imports/hooks/current-user";
 
-const ArticleHeader = ({ author, title, _id }: ArticleHeaderProps) => {
+const ArticleHeader = ({ author, title, _id, onDelete }: ArticleHeaderProps) => {
   const goTo = useNavigate();
   return (
     <Flex gap={10} justify="start" align="center" style={{ height: 50 }}>
@@ -34,6 +34,7 @@ const ArticleHeader = ({ author, title, _id }: ArticleHeaderProps) => {
         <Text>{author}</Text>
       </Box>
       {_id && (
+        <>
         <ActionIcon
           variant="light"
           onClick={() => {
@@ -42,6 +43,14 @@ const ArticleHeader = ({ author, title, _id }: ArticleHeaderProps) => {
         >
           <IconEdit size={20} />
         </ActionIcon>
+        <ActionIcon
+          variant="light"
+          color="red"
+          onClick={()=>{onDelete(_id)}}
+        >
+          <IconTrashX size={20} />
+        </ActionIcon></>
+        
       )}
     </Flex>
   );
@@ -89,6 +98,7 @@ export default function ArticlePreview({
   text,
   buttonText,
   onPress,
+  onDelete,
   date,
   title,
 }: ArticlePreviewProps) {
@@ -103,6 +113,7 @@ export default function ArticlePreview({
     >
       <Box className=" flex flex-col flex-1 gap-2">
         <ArticleHeader
+        onDelete={onDelete}
           title={title}
           _id={currentUser?._id === author ? _id : undefined}
           author={currentUser?._id === author ? "You" : author}

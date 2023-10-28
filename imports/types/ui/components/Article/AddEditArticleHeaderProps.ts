@@ -4,4 +4,5 @@ export interface AddEditArticleHeaderProps {
         error: any
     };
     image: string;
+    isLoading: boolean; 
 }

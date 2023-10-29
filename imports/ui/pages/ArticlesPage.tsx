@@ -10,7 +10,6 @@ import {
   Modal,
   Pagination,
   TextInput,
-  useMantineTheme,
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons";
 import { ACCENT_COLOUR } from "/imports/constants/styles";
@@ -26,6 +25,7 @@ export default function ArticlesPage() {
     500
   );
   const { data, isLoading, error } = useGetAllArticles(filter, {});
+  console.log("Articles", data)
   const { articles, pages, count } = data ?? {
     articles: [],
     pages: 0,

@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { ArticlesListProps } from "/imports/types/ui/components/Article/ArticlesListProps";
-import {
-  Card,
-  Center,
-  Title,
-} from "@mantine/core";
+import { Card, Center, Title } from "@mantine/core";
 import ArticlePreview, { ArticlePreviewLoading } from "./ArticlePreview";
 import { IconArticleOff, IconFaceIdError } from "@tabler/icons";
 import { ArticleErrorProps } from "/imports/types/ui/components/Article/ArticleErrorProps";
@@ -73,8 +69,12 @@ export default function ArticlesList({
       <AppModal
         loading={deleteArticle.isLoading}
         modalText="Are you sure you want to delete the article ?"
-        onClose={()=>{setDeletedPost(null)}}
-        onYes={()=>{deleteArticle.mutate(deletedPost as string)}}
+        onClose={() => {
+          setDeletedPost(null);
+        }}
+        onYes={() => {
+          deleteArticle.mutate(deletedPost as string);
+        }}
         opened={!!deletedPost}
       />
       {loading ? (
@@ -95,11 +95,18 @@ export default function ArticlesList({
               }}
               _id={article._id}
               key={article._id}
-              author={article.createdById ?? "Anonymous"}
+              author={article.author?.profile?.name ?? "Anonymous"}
+              authorId={article.createdById ?? ""}
               date={article.createdOn ?? Date.now()}
               text={article.text}
               title={article.title}
-              buttonText="Show Comments"
+              buttonText={
+                article.commentsCount
+                  ? article.commentsCount === 1
+                    ? `Show only one comment`
+                    : `Show ${article.commentsCount} comments`
+                  : "No comments, but show article anyway!"
+              }
               onPress={() => {
                 goTo("/articles/" + article._id);
               }}

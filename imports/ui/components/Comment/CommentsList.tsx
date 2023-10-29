@@ -1,5 +1,5 @@
 import { Flex, Skeleton, Title } from "@mantine/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CommentPreview, { CommentsPreviewLoading } from "./CommentPreview";
 import randAvat from "/imports/utils/random-avatar";
 import { CommentsListProps } from "/imports/types/ui/components/Comment/CommentsListProps";
@@ -40,6 +40,9 @@ export default function CommentsList({
   const [currComments, setCurrComments] = useState<ICommentWithEdit[]>(
     comments.map((comment) => ({ ...comment, edit: false }))
   );
+  useEffect(() => {
+    setCurrComments(comments.map((comment) => ({ ...comment, edit: false })));
+  }, [comments]);
   const deleteComment = useDeleteComment({
     onSuccess: () => {
       showNotification({

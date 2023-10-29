@@ -26,6 +26,7 @@ export default function SingleArticlePage() {
   const { comments, isLoading: isCommentsLoading } = useSubscribeComments({
     articleId: id as string,
   });
+  console.log("In compo",comments);
   const goTo = useNavigate();
   const deleteArticle = useDeleteArticle({
     onSuccess() {
@@ -59,8 +60,9 @@ export default function SingleArticlePage() {
             }}
           />
           <ArticlePreview
+            author={article?.author?.profile?.name ?? "Anonymous"}
             _id={currentUser ? id : undefined}
-            author={article?.createdById ?? "Test Author"}
+            authorId={article?.createdById ?? ""}
             date={article?.createdOn ?? Date.now()}
             text={article?.text ?? "Test Text"}
             title={article?.title ?? "Test Title"}
@@ -68,7 +70,11 @@ export default function SingleArticlePage() {
               setDeletedPost(id as string);
             }}
           />
-          <CommentsList articleId={id ?? ""} className="mt-10" comments={comments} />
+          <CommentsList
+            articleId={id ?? ""}
+            className="mt-10"
+            comments={comments}
+          />
         </>
       )}
     </Page>

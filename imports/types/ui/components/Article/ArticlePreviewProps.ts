@@ -7,6 +7,7 @@ export interface ArticleHeaderProps{
 export interface ArticlePreviewProps {
     _id?: string;
     author: string;
+    authorId: string;
     title: string;
     text: string;
     date: Date | number;

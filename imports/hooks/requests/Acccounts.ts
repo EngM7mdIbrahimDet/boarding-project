@@ -1,11 +1,11 @@
 import { UseMutationOptions, useMutation } from "react-query";
-import { ILoginUserReq, IRegisterUserReq } from "../../types/models/User";
+import { IUser } from "../../types/models/User";
 import { login, logout, register } from "/imports/api/requests/Accounts";
 
 export const useLoginUser = (
   options?: UseMutationOptions<any, unknown, any, unknown>
 ) => {
-  return useMutation<any, any, ILoginUserReq, any>(
+  return useMutation<any, any, IUser, any>(
     ["login"],
     (user) => login(user),
     {
@@ -29,7 +29,7 @@ export const useLogoutUser = (
 export const useRegisterUser = (
   options?: UseMutationOptions<any, unknown, any, unknown>
 ) =>{
-  return useMutation<any, any, IRegisterUserReq, any>(
+  return useMutation<any, any, IUser, any>(
     ["register"],
     (user) => register(user),
     {

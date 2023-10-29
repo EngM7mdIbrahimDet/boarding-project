@@ -17,7 +17,9 @@ export const postCommentToArticle = ({
   }
   const currentArticle = Articles.collection.findOne({ _id: articleId });
   if (!currentArticle) {
-    throw new Meteor.Error("Article not found! May be the author has removed it!");
+    throw new Meteor.Error(
+      "Article not found! May be the author has removed it!"
+    );
   }
   const newComment = {
     ...comment,
@@ -41,7 +43,9 @@ export const removeComment = ({ commentId }: { commentId: string }) => {
   }
   const currentComment = Comments.collection.findOne({ _id: commentId });
   if (!currentComment) {
-    throw new Meteor.Error("Comment not found! May be you have already removed it!");
+    throw new Meteor.Error(
+      "Comment not found! May be you have already removed it!"
+    );
   }
   if (currentComment.createdById !== currenUser._id) {
     throw new Meteor.Error("You can only remove your own comments");
@@ -63,20 +67,24 @@ export const updateComment = ({
   }
   const currentComment = Comments.collection.findOne({ _id: commentId });
   if (!currentComment) {
-    throw new Meteor.Error("Comment not found! May be you have removed it before!");
+    throw new Meteor.Error(
+      "Comment not found! May be you have removed it before!"
+    );
   }
   if (currentComment.createdById !== currenUser._id) {
     throw new Meteor.Error("You can only update your own comments");
   }
+  const {_id, ...restComment} = currentComment;
+  const newComment = {
+    ...comment,
+    ...restComment,
+  };
   validateObject(
     Comments.schema,
-    comment,
+    newComment,
     "Something is wrong with the comment"
   );
-  Comments.collection.update(
-    { _id: commentId },
-    { $set: { text: comment.text } }
-  );
+  Comments.collection.update({ _id: commentId }, { $set: newComment });
   return true;
 };
 

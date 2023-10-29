@@ -1,9 +1,24 @@
 import { Meteor } from "meteor/meteor";
 import handleMeteorError from "./handle-error";
-import { ILoginUserReq } from "../types/models/User";
+import { IUser } from "../types/models/User";
 import { NETWORK_DELAY } from "../constants/other";
-function loginAsync({ email, password }: ILoginUserReq): Promise<null> {
-  return new Promise<null>((resolve, reject) =>
+function loginAsync({ emails, password }: IUser): Promise<null> {
+  return new Promise<null>((resolve, reject) => {
+    if (!emails || emails.length === 0 || emails[0]?.address === undefined) {
+      const metoerError = new Meteor.Error("Email is required!");
+      console.log(metoerError.reason);
+      handleMeteorError(metoerError);
+      reject(metoerError);
+      return;
+    }
+    if (!password) {
+      const metoerError = new Meteor.Error("Password is required!");
+      console.log(metoerError.reason);
+      handleMeteorError(metoerError);
+      reject(metoerError);
+      return;
+    }
+    const email = emails[0].address;
     Meteor.loginWithPassword(email, password, (error) => {
       if (error && error instanceof Meteor.Error) {
         setTimeout(() => {
@@ -20,7 +35,7 @@ function loginAsync({ email, password }: ILoginUserReq): Promise<null> {
           resolve(null);
         }, NETWORK_DELAY);
       }
-    })
-  );
+    });
+  });
 }
 export default loginAsync;

@@ -94,6 +94,7 @@ export const ArticlePreviewLoading = () => {
 
 export default function ArticlePreview({
   _id,
+  authorId,
   author,
   text,
   buttonText,
@@ -116,7 +117,7 @@ export default function ArticlePreview({
         onDelete={onDelete}
           title={title}
           _id={currentUser?._id === author ? _id : undefined}
-          author={currentUser?._id === author ? "You" : author}
+          author={currentUser?._id === authorId ? "You" : author}
         />
         <Text
           mt="md"

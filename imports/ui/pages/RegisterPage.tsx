@@ -71,7 +71,7 @@ export default function RegisterPage() {
   const register = useRegisterUser({
     onSuccess() {
       login.mutate({
-        email: form.values.email,
+        emails: [{ address: form.values.email }],
         password: form.values.password,
       });
     },
@@ -100,9 +100,9 @@ export default function RegisterPage() {
               className="flex flex-col gap-3 justify-start items-stretch"
               onSubmit={form.onSubmit((values) => {
                 register.mutate({
-                  email: values.email,
+                  emails: [{ address: values.email }],
                   password: values.password,
-                  name: values.name,
+                  profile: { name: values.name },
                   confirmPassword: values.confirmPassword,
                 });
               })}

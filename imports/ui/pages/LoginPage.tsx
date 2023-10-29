@@ -55,16 +55,16 @@ export default function LoginPage() {
 
   const handleSubmit = () => {
     return form.onSubmit((values) => {
-      login.mutate({ email: values.email, password: values.password });
+      login.mutate({
+        emails: [{ address: values.email }],
+        password: values.password,
+      });
     });
   };
   return (
     <Page className="relative">
       <BackgroundImage />
-      <Center
-        style={{ height: FULL_SCREEN }}
-        className="w-full "
-      >
+      <Center style={{ height: FULL_SCREEN }} className="w-full ">
         <Card
           style={{ minHeight: "50%" }}
           className="w-1/2"

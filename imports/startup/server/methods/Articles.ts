@@ -5,32 +5,50 @@ import validateObject from "/imports/utils/validate-schema";
 
 const getAllArticles = async ({ filter }: { filter: IArticleFilter }) => {
   const skipCount = filter?.page ? Math.max(+filter.page - 1, 0) * 10 : 0;
+  console.log("skipCount", skipCount)
   const articles = Articles.collection
-    .find(
-      {
+    .createQuery({
+      $filters: {
         $or: [
           { title: { $regex: new RegExp(`.*${filter?.search}.*`, "i") } },
           {
-            description: { $regex: new RegExp(`.*${filter?.search}.*`, "i") },
+            text: { $regex: new RegExp(`.*${filter?.search}.*`, "i") },
           },
         ],
       },
-      {
+      $options: {
         sort: { createdOn: -1 },
-        limit: 10,
         skip: skipCount,
-      }
-    )
+      },
+      title: 1,
+      createdOn: 1,
+      text: 1,
+      createdById: 1,
+      author: {
+        profile: {
+          name: 1,
+        },
+      },
+      comments: {
+        text: 1
+      },
+      commentsCount: 1,
+    })
     .fetch();
   const articlesCount = Articles.collection.find({}).count();
   return {
-    articles,
+    articles: articles.slice(0, 10),
     count: articlesCount,
-    pages: Math.ceil(articlesCount / 10),
+    pages: Math.ceil(articles.length / 10),
   };
 };
 const getSignleArticle = ({ articleID }: { articleID: string }) => {
-  return Articles.collection.findOne({ _id: articleID });
+  return Articles.collection
+    .createQuery({
+      $filters: { _id: articleID },
+      author: { profile: { name: 1 } },
+    })
+    .fetchOne();
 };
 const addArticle = ({ article }: { article: IArticle }) => {
   const currentUserID = Meteor.userId();

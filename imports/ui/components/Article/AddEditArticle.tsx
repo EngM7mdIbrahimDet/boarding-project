@@ -18,7 +18,6 @@ import * as Yup from "yup";
 import timeAgo from "/imports/utils/date-formatter";
 import {
   useAddArticle,
-  useGetSingleArticle,
   useUpdateArticle,
 } from "/imports/hooks/requests/Articles";
 import { useQueryClient } from "react-query";

@@ -12,7 +12,10 @@ import AppModal from "../components/AppModal";
 import { useQueryClient } from "react-query";
 import { showNotification } from "@mantine/notifications";
 import useCurrentUser from "/imports/hooks/current-user";
-import CommentsList, { CommentsListLoading } from "../components/Comment/CommentsList";
+import CommentsList, {
+  CommentsListLoading,
+} from "../components/Comment/CommentsList";
+import useSubscribeComments from "/imports/hooks/publications/useSubscribeComments";
 
 export default function SingleArticlePage() {
   const { id } = useParams();
@@ -20,6 +23,9 @@ export default function SingleArticlePage() {
   const { data: article, isLoading } = useGetSingleArticle(id as string, {});
   const queryClient = useQueryClient();
   const currentUser = useCurrentUser();
+  const { comments, isLoading: isCommentsLoading } = useSubscribeComments({
+    articleId: id as string,
+  });
   const goTo = useNavigate();
   const deleteArticle = useDeleteArticle({
     onSuccess() {
@@ -36,7 +42,7 @@ export default function SingleArticlePage() {
   });
   return (
     <Page className="py-7 gap-2 flex flex-col justify-start items-center">
-      {isLoading ? (
+      {isLoading || isCommentsLoading ? (
         <>
           <ArticlePreviewLoading />
           <CommentsListLoading />
@@ -62,31 +68,7 @@ export default function SingleArticlePage() {
               setDeletedPost(id as string);
             }}
           />
-          <CommentsList
-            className="mt-10"
-            comments={[
-              {
-                text: "Test C CommentTest Comment",
-                createdById: "Test Author",
-              },
-              {
-                text: "Test C CommentTest Comment",
-                createdById: "Test Author",
-              },
-              {
-                text: "Test C CommentTest Comment",
-                createdById: "Test Author",
-              },
-              {
-                text: "Test C CommentTest Comment",
-                createdById: "Test Author",
-              },
-              {
-                text: "Test C CommentTest Comment",
-                createdById: "Test Author",
-              },
-            ]}
-          />
+          <CommentsList articleId={id ?? ""} className="mt-10" comments={comments} />
         </>
       )}
     </Page>
